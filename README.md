@@ -35,6 +35,8 @@ Para rodar este projeto no seu servidor local (XAMPP/WAMP) ou hospedagem (cPanel
 2. Insira as credenciais do seu banco de dados (Host, Usuário, Senha e Nome do Banco).
 3. Localize a definição da **Chave Mestra** e altere-a para uma string segura (obrigatório **no mínimo 32 caracteres**).
    * Exemplo: `define('CHAVE_MESTRA', 'suachavemestradeveternominimo32caracteres');`
+4. Localize a definição do **Endereço do seu Site** e altere-a para o endereço (exato **do seu projeto**).
+   * Exemplo: `define('APP_URL', 'https://seuendereco.com.br/fotos');`
 
 ### 3. API do Google Drive (Hospedagem das Imagens)
 O sistema não consome o disco da sua hospedagem; ele puxa as fotos diretamente do Drive.
