@@ -12,7 +12,7 @@ define('DB_PASS', 'suasenha');
 // Exemplo: 'https://seusite.com.br/fotos' ou 'http://localhost/projeto_github'
 define('APP_URL', 'https://seuendereco.com.br/fotos');
 
-define('APP_KEY', 'suachavemestrade32caracteres'); // Chave mestra de criptografia (Mínimo 32 caracteres)
+define('APP_KEY', 'suachavemestradeveternominimo32caracteres'); // Chave mestra de criptografia (Mínimo 32 caracteres)
 
 try {
     $options = [
