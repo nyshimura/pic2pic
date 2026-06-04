@@ -95,7 +95,6 @@ try {
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: #f4f6f8; color: #333; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
         
-        /* NAVBAR ESTILO GOOGLE */
         .google-nav { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .google-nav .brand { font-weight: 800; font-size: 18px; color: #111; text-decoration: none; display: flex; align-items: center; gap: 5px; }
         
@@ -104,12 +103,10 @@ try {
         .btn-user-logged { background-color: #f1f3f4; color: #3c4043; border: 1px solid #dadce0; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
         .btn-user-logged:hover { background-color: #e8eaed; }
 
-        /* HERO SECTION */
         .hero { text-align: center; padding: 50px 20px 30px; background: #fff; border-bottom: 1px solid #eee; margin-bottom: 30px; }
         .hero h1 { font-size: 28px; font-weight: 800; color: #111; margin-bottom: 10px; }
         .hero p { font-size: 15px; color: #666; max-width: 500px; margin: 0 auto; line-height: 1.5; }
 
-        /* ESTILOS NETFLIX (PRATELEIRAS HORIZONTAIS) */
         .vitrine-container { max-width: 1200px; margin: 0 auto; width: 100%; flex-grow: 1; padding-bottom: 50px; }
         .prateleira-section { margin-bottom: 40px; width: 100%; }
         .prateleira-title { font-size: 20px; font-weight: 800; color: #111; margin-bottom: 15px; padding: 0 5%; display: flex; align-items: center; gap: 8px; }
@@ -121,8 +118,7 @@ try {
         }
         .prateleira-row::-webkit-scrollbar { display: none; }
         
-        /* CARD DO EVENTO CLICÁVEL */
-        .card-evento { flex: 0 0 290px; scroll-snap-align: start; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; display: flex; flex-direction: column; text-decoration: none; color: inherit; height: 315px; }
+        .card-evento { flex: 0 0 290px; min-width: 290px; max-width: 290px; scroll-snap-align: start; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; display: flex; flex-direction: column; text-decoration: none; color: inherit; height: 315px; }
         .card-evento:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
         .card-thumb { width: 100%; height: 180px; background-color: #ddd; object-fit: cover; }
         .card-body { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
@@ -131,9 +127,11 @@ try {
         .card-btn { margin-top: auto; background-color: #e8f0fe; color: #1a73e8; border: none; padding: 12px; border-radius: 6px; font-size: 14px; font-weight: 700; transition: 0.2s; text-align: center; }
         .card-evento:hover .card-btn { background-color: #1a73e8; color: #fff; }
 
-        /* CARD DO ANÚNCIO NA PRATELEIRA */
         .card-ad { 
             flex: 0 0 290px; 
+            width: 290px;
+            min-width: 290px; 
+            max-width: 290px;
             scroll-snap-align: start; 
             background: #fafafa; 
             border-radius: 12px; 
@@ -145,11 +143,19 @@ try {
             overflow: hidden; 
         }
         .ad-badge { position: absolute; top: 12px; right: 15px; font-size: 10px; color: #9aa0a6; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; z-index: 10; }
-        .ad-wrapper { width: 100%; height: calc(100% - 20px); margin-top: 20px; display: flex; align-items: center; justify-content: center; }
+        
+        .ad-wrapper { 
+            width: 268px; 
+            min-width: 268px;
+            height: 270px;
+            min-height: 270px;
+            margin: 20px auto 0 auto; 
+            display: block; 
+            overflow: hidden; 
+        }
 
         .empty-state { text-align: center; padding: 50px 20px; color: #888; width: 100%; }
 
-        /* MODAIS DE AUTENTICAÇÃO */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; backdrop-filter: blur(3px); }
         .modal-box { background: #fff; width: 100%; max-width: 420px; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 95vh; overflow-y: auto; }
         @keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
@@ -224,8 +230,7 @@ try {
                                 <div class="card-ad">
                                     <span class="ad-badge">Patrocinado</span>
                                     <div class="ad-wrapper">
-                                        <ins class="adsbygoogle" style="display:inline-block; width:268px; height:270px;" data-ad-client="<?= htmlspecialchars($adsenseId) ?>"></ins>
-                                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                                        <ins class="adsbygoogle" style="display:block !important; width:268px !important; min-width:268px !important; height:270px !important;" data-ad-client="<?= htmlspecialchars($adsenseId) ?>"></ins>
                                     </div>
                                 </div>
                             <?php endif; ?>
@@ -255,8 +260,7 @@ try {
                                 <div class="card-ad">
                                     <span class="ad-badge">Patrocinado</span>
                                     <div class="ad-wrapper">
-                                        <ins class="adsbygoogle" style="display:inline-block; width:268px; height:270px;" data-ad-client="<?= htmlspecialchars($adsenseId) ?>"></ins>
-                                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                                        <ins class="adsbygoogle" style="display:block !important; width:268px !important; min-width:268px !important; height:270px !important;" data-ad-client="<?= htmlspecialchars($adsenseId) ?>"></ins>
                                     </div>
                                 </div>
                             <?php endif; ?>
@@ -286,8 +290,7 @@ try {
                                 <div class="card-ad">
                                     <span class="ad-badge">Patrocinado</span>
                                     <div class="ad-wrapper">
-                                        <ins class="adsbygoogle" style="display:inline-block; width:268px; height:270px;" data-ad-client="<?= htmlspecialchars($adsenseId) ?>"></ins>
-                                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                                        <ins class="adsbygoogle" style="display:block !important; width:268px !important; min-width:268px !important; height:270px !important;" data-ad-client="<?= htmlspecialchars($adsenseId) ?>"></ins>
                                     </div>
                                 </div>
                             <?php endif; ?>
@@ -425,9 +428,6 @@ try {
             } catch(err) { msg.className = 'alerta erro'; msg.innerText = 'Erro de comunicação com o servidor.'; btn.innerText = 'Criar Conta'; }
         });
 
-        // ==========================================
-        // Lógica do Cookie Banner LGPD
-        // ==========================================
         document.addEventListener("DOMContentLoaded", function() {
             if (!localStorage.getItem('pic2pic_cookies_aceitos')) {
                 document.getElementById('lgpd-cookie-banner').style.display = 'flex';
@@ -441,6 +441,45 @@ try {
                 document.getElementById('lgpd-cookie-banner').style.display = 'none';
             }, 300);
         }
+        
+        // ==========================================
+        // SOLUÇÃO DEFINITIVA: ADSENSE OBSERVER (RAIO LONGO)
+        // Acorda o anúncio 500px antes de ele entrar na tela!
+        // ==========================================
+        document.addEventListener("DOMContentLoaded", function() {
+            const adCards = document.querySelectorAll('.card-ad');
+            
+            if ('IntersectionObserver' in window) {
+                const adObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const insElement = entry.target.querySelector('ins.adsbygoogle');
+                            
+                            // Verifica se o anúncio já não foi injetado pelo Google
+                            if (insElement && !insElement.getAttribute('data-adsbygoogle-status')) {
+                                try {
+                                    (adsbygoogle = window.adsbygoogle || []).push({});
+                                } catch (e) { }
+                            }
+                            // Desliga o radar para este card, pois o anúncio já carregou
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { 
+                    root: null, // Olha para a janela inteira do telemóvel
+                    rootMargin: '500px 500px 500px 500px', // Acorda o Google quando faltam 500px para o card aparecer
+                    threshold: 0 
+                });
+
+                // Inicia o radar para todos os blocos de anúncio
+                adCards.forEach(card => adObserver.observe(card));
+            } else {
+                // Fallback para navegadores muito antigos
+                document.querySelectorAll('ins.adsbygoogle').forEach(() => {
+                    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
+                });
+            }
+        });
     </script>
 </body>
 </html>
