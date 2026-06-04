@@ -102,8 +102,8 @@ try {
 
         .masonry-item { break-inside: avoid; margin-bottom: 15px; position: relative; border-radius: 12px; overflow: hidden; background: #e9ecef; cursor: pointer; border: 3px solid transparent; transition: transform 0.2s, border-color 0.2s; }
         
-        /* ESTILO DO ANÚNCIO CAMALEÃO NA GALERIA */
-        .masonry-ad { background: #fff; border: 1px dashed #dadce0; cursor: default; min-height: 250px; display: flex; align-items: center; justify-content: center; }
+        /* ESTILO DO ANÚNCIO BLINDADO NA GALERIA */
+        .masonry-ad { background: #fff; border: 1px dashed #dadce0; cursor: default; display: block; position: relative; padding: 10px; overflow: hidden; min-height: 270px; }
         .ad-badge { position: absolute; top: 10px; right: 10px; font-size: 10px; color: #9aa0a6; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; z-index: 10; }
 
         .masonry-item img { width: 100%; display: block; border-radius: 9px; min-height: 150px; object-fit: cover; z-index: 1; position: relative; }
@@ -202,15 +202,14 @@ try {
                         <?php endif; ?>
                     </div>
 
-                    <?php if ($adsenseAtivo === 1 && !empty($adsenseId) && ($index + 1) % 12 === 0): ?>
+                    <?php if ($adsenseAtivo === 1 && !empty($adsenseId) && ($index + 1) % 6 === 0): ?>
                         <div class="masonry-item masonry-ad">
                             <span class="ad-badge">Patrocinado</span>
                             <ins class="adsbygoogle"
-                                 style="display:block; width:100%; height:250px;"
+                                 style="display:block !important; width:100% !important; min-width:250px !important; height:250px !important; margin-top:20px;"
                                  data-ad-client="<?= htmlspecialchars($adsenseId) ?>"
                                  data-ad-format="fluid"
                                  data-ad-layout="in-article"></ins>
-                            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
                         </div>
                     <?php endif; ?>
 
@@ -288,7 +287,6 @@ try {
         const precoFormatado = '<?= number_format(floatval($evento['preco_foto']), 2, ',', '.') ?>';
         let fotosSelecionadas = new Set();
         
-        // Variaveis globais de controle para injetar anúncios via JS no scroll
         const isAdsenseAtivo = <?= $adsenseAtivo ?>;
         const clientAdsenseId = '<?= htmlspecialchars($adsenseId) ?>';
         let contadorFotosJS = <?= count($fotosIniciais) ?>; 
@@ -297,6 +295,7 @@ try {
         let carregando = false;
         let temMaisFotos = true;
         let modoFiltroAtivo = false;
+        let adObserver = null; // Variável global para o radar
 
         window.addEventListener('scroll', () => {
             if (carregando || !temMaisFotos || modoFiltroAtivo) return;
@@ -345,21 +344,27 @@ try {
                 `;
                 container.appendChild(div);
 
-                // Conta a foto carregada e decide se injeta um anúncio no scroll infinito
+                // Conta a foto carregada e injeta anúncio a cada 6 fotos
                 contadorFotosJS++;
-                if (isAdsenseAtivo === 1 && clientAdsenseId !== '' && contadorFotosJS % 12 === 0) {
+                if (isAdsenseAtivo === 1 && clientAdsenseId !== '' && contadorFotosJS % 6 === 0) {
                     const divAd = document.createElement('div');
                     divAd.className = 'masonry-item masonry-ad';
                     divAd.innerHTML = `
                         <span class="ad-badge">Patrocinado</span>
                         <ins class="adsbygoogle"
-                             style="display:block; width:100%; height:250px;"
+                             style="display:block !important; width:100% !important; min-width:250px !important; height:250px !important; margin-top:20px;"
                              data-ad-client="${clientAdsenseId}"
                              data-ad-format="fluid"
                              data-ad-layout="in-article"></ins>
                     `;
                     container.appendChild(divAd);
-                    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
+                    
+                    // Diz ao radar para vigiar o novo anúncio gerado dinamicamente
+                    if (adObserver) {
+                        adObserver.observe(divAd);
+                    } else {
+                        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
+                    }
                 }
             });
         }
@@ -451,6 +456,33 @@ try {
         }
         
         function limparFiltro() { location.reload(); }
+
+        // ==========================================
+        // SOLUÇÃO DEFINITIVA: ADSENSE OBSERVER (GALERIA)
+        // ==========================================
+        document.addEventListener("DOMContentLoaded", function() {
+            if ('IntersectionObserver' in window) {
+                adObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const insElement = entry.target.querySelector('ins.adsbygoogle');
+                            if (insElement && !insElement.getAttribute('data-adsbygoogle-status')) {
+                                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { }
+                            }
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { root: null, rootMargin: '500px', threshold: 0 });
+
+                // Observar todos os anúncios já carregados pelo PHP no início
+                document.querySelectorAll('.masonry-ad').forEach(card => adObserver.observe(card));
+            } else {
+                document.querySelectorAll('ins.adsbygoogle').forEach(() => {
+                    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
+                });
+            }
+        });
+
     </script>
     
     <div id="lgpd-cookie-banner" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 700px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); z-index: 9999; border: 1px solid #dadce0; align-items: center; justify-content: space-between; gap: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
@@ -464,22 +496,13 @@ try {
     </div>
 
     <script>
-        // Lógica do Cookie Banner (Verifica o LocalStorage do Navegador)
         document.addEventListener("DOMContentLoaded", function() {
-            if (!localStorage.getItem('pic2pic_cookies_aceitos')) {
-                // Se não aceitou ainda, exibe o banner com Flexbox para ficar alinhado
-                document.getElementById('lgpd-cookie-banner').style.display = 'flex';
-            }
+            if (!localStorage.getItem('pic2pic_cookies_aceitos')) { document.getElementById('lgpd-cookie-banner').style.display = 'flex'; }
         });
-
         function aceitarCookies() {
-            // Grava o consentimento no navegador do usuário
             localStorage.setItem('pic2pic_cookies_aceitos', 'sim');
-            // Oculta o banner com uma transição rápida
             document.getElementById('lgpd-cookie-banner').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('lgpd-cookie-banner').style.display = 'none';
-            }, 300);
+            setTimeout(() => { document.getElementById('lgpd-cookie-banner').style.display = 'none'; }, 300);
         }
     </script>
 </body>
