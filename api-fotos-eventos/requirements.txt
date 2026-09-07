@@ -1,0 +1,8 @@
+fastapi
+python-multipart
+uvicorn
+face_recognition
+Pillow
+numpy
+requests
+pydantic
