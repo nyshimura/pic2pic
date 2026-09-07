@@ -52,6 +52,19 @@ O sistema conta com vitrine pública, painel exclusivo para fotógrafos (upload 
 3. No mesmo arquivo, ajuste o caminho do seu site na constante `APP_URL`. 
 4. **Importante**: Altere a chave `APP_KEY` para uma chave segura e aleatória (mínimo de 32 caracteres) para garantir a criptografia interna.
 
+#### Inteligência Artificial (Reconhecimento Facial)
+- O sistema usa uma API externa em Python hospedada no **Hugging Face** para processar os rostos nas fotos.
+- **Como publicar a sua própria API:**
+  1. Crie uma conta gratuita no [Hugging Face](https://huggingface.co/).
+  2. Crie um novo **Space** (Geralmente usando o SDK Docker ou Gradio/FastAPI).
+  3. Faça o upload de **todos os arquivos** que estão dentro da pasta local `/api-fotos-eventos` deste projeto para dentro do seu novo Space.
+  4. Aguarde o Space fazer o "Build" e ficar com o status *Running*.
+- **Como conectar a API ao sistema:**
+  1. Copie o link direto do seu Space em execução (ex: `https://seu-usuario-api-fotos-eventos.hf.space`).
+  2. Abra o arquivo `configuracoes/conexao.php`.
+  3. Procure pela constante `URL_API_IA` e insira o seu link ali (sem a barra `/` no final).
+  4. Pronto! O sistema inteiro (scripts de filtro, sincronização e pings) já vai puxar essa URL automaticamente.
+
 ### 4. Permissões de Pastas
 Certifique-se de que o servidor tenha permissão de escrita (`chmod 755` ou `775`) nas seguintes pastas:
 - `/uploads` (se houver uploads locais de avatares)
