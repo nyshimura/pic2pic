@@ -31,9 +31,6 @@ try {
     $fotografo = $stmtFoto->fetch();
 
     if ($fotografo && password_verify($senha, $fotografo['senha'])) {
-        // Regenera o ID da sessão para prevenir Session Fixation
-        session_regenerate_id(true);
-        
         $_SESSION['fotografo_id'] = $fotografo['id'];
         $_SESSION['fotografo_nome'] = $fotografo['nome'];
         $_SESSION['ultima_atividade'] = time();
@@ -83,8 +80,6 @@ try {
 
         // --- CLIENTE NORMAL (Já definiu a senha antes) ---
         if (password_verify($senha, $comprador['senha'])) {
-            session_regenerate_id(true);
-            
             $_SESSION['comprador_id'] = $comprador['id'];
             $_SESSION['comprador_nome'] = $comprador['nome'];
             $_SESSION['ultima_atividade'] = time();

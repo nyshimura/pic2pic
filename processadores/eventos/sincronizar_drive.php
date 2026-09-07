@@ -73,7 +73,7 @@ try {
     $fotosProcessadas = 0;
     $paradaForcada = false;
     
-    $endpointHf = 'https://nyshimura-api-fotos-eventos.hf.space/extrair_base64/'; 
+    $endpointHf = URL_API_IA . '/extrair_base64/'; 
 
     $stmtInsert = $pdo->prepare("INSERT INTO fotos_eventos (evento_id, drive_file_id, url_visualizacao, encoding_facial) VALUES (?, ?, ?, ?)");
     $stmtUpdate = $pdo->prepare("UPDATE fotos_eventos SET encoding_facial = ? WHERE id = ?");

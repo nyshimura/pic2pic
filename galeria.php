@@ -33,9 +33,15 @@ try {
         $idEventoAtual = $evento['evento_id'];
         $nomeCookie = "visitou_evento_" . $idEventoAtual;
         
+        // Verifica se o cliente já visitou ESTE evento nas últimas 6 horas
         if (!isset($_COOKIE[$nomeCookie])) {
+            // Se não visitou (ou o cookie já expirou), soma +1 no banco de dados
             $pdo->prepare("UPDATE eventos SET visitas = visitas + 1 WHERE id = ?")->execute([$idEventoAtual]);
+            
+            // Define o tempo de bloqueio (6 horas = 6 * 3600 segundos). Pode alterar o 6 para o que desejar.
             $tempoBloqueio = time() + (6 * 3600); 
+            
+            // Cria o cookie no dispositivo do cliente
             setcookie($nomeCookie, 'sim', $tempoBloqueio, '/');
         }
         
@@ -96,8 +102,8 @@ try {
 
         .masonry-item { break-inside: avoid; margin-bottom: 15px; position: relative; border-radius: 12px; overflow: hidden; background: #e9ecef; cursor: pointer; border: 3px solid transparent; transition: transform 0.2s, border-color 0.2s; }
         
-        /* ESTILO DO ANÚNCIO BLINDADO NA GALERIA */
-        .masonry-ad { background: #fff; border: 1px dashed #dadce0; cursor: default; display: block; position: relative; padding: 10px; overflow: hidden; min-height: 270px; }
+        /* ESTILO DO ANÚNCIO CAMALEÃO NA GALERIA */
+        .masonry-ad { background: #fff; border: 1px dashed #dadce0; cursor: default; min-height: 250px; display: flex; align-items: center; justify-content: center; }
         .ad-badge { position: absolute; top: 10px; right: 10px; font-size: 10px; color: #9aa0a6; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; z-index: 10; }
 
         .masonry-item img { width: 100%; display: block; border-radius: 9px; min-height: 150px; object-fit: cover; z-index: 1; position: relative; }
@@ -118,12 +124,9 @@ try {
         .cart-info strong { font-size: 18px; color: #1a73e8; font-weight: 800; }
         .btn-checkout { background: #1a73e8; color: #fff; border: none; padding: 12px 25px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; }
 
-        /* MODAIS DE AUTENTICAÇÃO ATUALIZADOS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; backdrop-filter: blur(5px); }
-        .modal-box { background: #fff; width: 100%; max-width: 420px; padding: 30px; border-radius: 16px; position: relative; max-height: 95vh; overflow-y: auto; }
-        .btn-close-modal { position: absolute; top: 15px; right: 15px; background: #f1f3f4; border: none; font-size: 20px; color: #333; cursor: pointer; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .btn-close-modal:hover { background: #e0e0e0; }
-        
+        .modal-box { background: #fff; width: 100%; max-width: 420px; padding: 30px; border-radius: 16px; position: relative; }
+        .btn-close-modal { position: absolute; top: 15px; right: 15px; background: #f1f3f4; border: none; font-size: 20px; color: #333; cursor: pointer; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .camera-viewport { width: 100%; max-width: 250px; height: 250px; background: #000; border-radius: 50%; overflow: hidden; margin: 0 auto 20px; border: 4px solid #1a73e8; }
         #video-preview { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
         #canvas-capture { display: none; }
@@ -133,19 +136,13 @@ try {
 
         .form-group { margin-bottom: 16px; text-align: left; }
         .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #444; }
-        .form-group input { width: 100%; padding: 12px; border: 1px solid #dadce0; border-radius: 6px; font-size: 14px; transition: 0.2s; }
-        .form-group input:focus { border-color: #1a73e8; outline: none; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #dadce0; border-radius: 6px; font-size: 14px; }
         .btn-modal-submit { width: 100%; background: #1a73e8; color: #fff; border: none; padding: 14px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: 0.2s; }
-        .btn-modal-submit:hover { background: #1557b0; }
-        .btn-secundario { background: #f1f3f4; color: #333; margin-top: 8px; }
-        .btn-secundario:hover { background: #e8eaed; }
-        
         .toggle-text { text-align: center; margin-top: 20px; font-size: 13px; color: #666; }
         .toggle-text a { color: #1a73e8; text-decoration: none; font-weight: 600; cursor: pointer; }
         #panel-cadastro { display: none; }
         .alerta { padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 13px; display: none; text-align: center; font-weight: 500; }
         .alerta.erro { background: #fce8e6; color: #c5221f; border: 1px solid #fad2cf; display: block; }
-        .alerta.sucesso { background: #e6f4ea; color: #137333; border: 1px solid #ceead6; display: block; }
         
         .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 3000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
         .spinner-ia { border: 4px solid #f3f3f3; border-top: 4px solid #1a73e8; border-radius: 50%; width: 50px; height: 50px; animation: rodar 1s linear infinite; margin-bottom: 20px; }
@@ -205,14 +202,15 @@ try {
                         <?php endif; ?>
                     </div>
 
-                    <?php if ($adsenseAtivo === 1 && !empty($adsenseId) && ($index + 1) % 6 === 0): ?>
+                    <?php if ($adsenseAtivo === 1 && !empty($adsenseId) && ($index + 1) % 12 === 0): ?>
                         <div class="masonry-item masonry-ad">
                             <span class="ad-badge">Patrocinado</span>
                             <ins class="adsbygoogle"
-                                 style="display:block !important; width:100% !important; min-width:250px !important; height:250px !important; margin-top:20px;"
+                                 style="display:block; width:100%; height:250px;"
                                  data-ad-client="<?= htmlspecialchars($adsenseId) ?>"
                                  data-ad-format="fluid"
                                  data-ad-layout="in-article"></ins>
+                            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
                         </div>
                     <?php endif; ?>
 
@@ -237,34 +235,26 @@ try {
     <div id="modal-auth" class="modal-overlay" onclick="fecharModalAuth(event)">
         <div class="modal-box" onclick="event.stopPropagation()">
             <button class="btn-close-modal" onclick="fecharModalAuth('forced')">&times;</button>
-            
             <div id="panel-login">
                 <h3 style="margin-bottom: 5px; font-size: 22px; text-align: center;">Fazer login</h3>
-                <p style="font-size: 13px; color: #5f6368; text-align: center; margin-bottom: 25px;">Acessar o Painel de Controle</p>
                 <div id="msg-login" class="alerta"></div>
                 <form id="form-login">
-                    <div class="form-group"><label>E-mail</label><input type="email" id="login_email" required autocomplete="username" placeholder="Seu e-mail cadastrado"></div>
-                    <div class="form-group" id="div-senha" style="display: none;"><label>Senha</label><input type="password" id="login_senha" autocomplete="current-password" placeholder="Sua senha de acesso"></div>
-                    <button type="submit" id="btn-submit-login" class="btn-modal-submit">Continuar</button>
-                    <button type="button" id="btn-voltar-email" class="btn-modal-submit btn-secundario" style="display: none;" onclick="voltarParaEmail()">Alterar E-mail</button>
+                    <div class="form-group"><label>E-mail</label><input type="email" id="login_email" required></div>
+                    <div class="form-group"><label>Senha</label><input type="password" id="login_senha" required></div>
+                    <button type="submit" class="btn-modal-submit">Entrar</button>
                 </form>
-                <div class="toggle-text" id="footer-login">Novo por aqui? <a onclick="alternarAbasAuth('cadastro')">Criar conta grátis</a></div>
+                <div class="toggle-text">Novo por aqui? <a onclick="alternarAbasAuth('cadastro')">Criar conta</a></div>
             </div>
-
             <div id="panel-cadastro">
                 <h3 style="margin-bottom: 5px; font-size: 22px; text-align: center;">Criar sua conta</h3>
-                <p style="font-size: 13px; color: #5f6368; text-align: center; margin-bottom: 25px;">Cadastre-se como Parceiro</p>
                 <div id="msg-cadastro" class="alerta"></div>
                 <form id="form-cadastro">
-                    <div class="form-group"><label>Nome</label><input type="text" id="cad_nome" required autocomplete="name"></div>
-                    <div class="form-group"><label>E-mail</label><input type="email" id="cad_email" required autocomplete="email"></div>
-                    <div class="form-group"><label>Senha</label><input type="password" id="cad_senha" required minlength="6" autocomplete="new-password"></div>
-                    <p style="font-size: 11px; color: #666; text-align: center; margin-top: 15px; line-height: 1.4;">
-                        Ao clicar em "Criar Conta", você declara que leu e concorda com os nossos <a href="termos.php" target="_blank" style="color: #1a73e8; text-decoration: underline;">Termos de Uso</a>.
-                    </p>
+                    <div class="form-group"><label>Nome</label><input type="text" id="cad_nome" required></div>
+                    <div class="form-group"><label>E-mail</label><input type="email" id="cad_email" required></div>
+                    <div class="form-group"><label>Senha</label><input type="password" id="cad_senha" required minlength="6"></div>
                     <button type="submit" class="btn-modal-submit">Criar Conta</button>
                 </form>
-                <div class="toggle-text">Já possui conta? <a onclick="alternarAbasAuth('login')">Fazer login</a></div>
+                <div class="toggle-text">Já tem conta? <a onclick="alternarAbasAuth('login')">Fazer login</a></div>
             </div>
         </div>
     </div>
@@ -298,6 +288,7 @@ try {
         const precoFormatado = '<?= number_format(floatval($evento['preco_foto']), 2, ',', '.') ?>';
         let fotosSelecionadas = new Set();
         
+        // Variaveis globais de controle para injetar anúncios via JS no scroll
         const isAdsenseAtivo = <?= $adsenseAtivo ?>;
         const clientAdsenseId = '<?= htmlspecialchars($adsenseId) ?>';
         let contadorFotosJS = <?= count($fotosIniciais) ?>; 
@@ -306,7 +297,6 @@ try {
         let carregando = false;
         let temMaisFotos = true;
         let modoFiltroAtivo = false;
-        let adObserver = null; 
 
         window.addEventListener('scroll', () => {
             if (carregando || !temMaisFotos || modoFiltroAtivo) return;
@@ -355,25 +345,21 @@ try {
                 `;
                 container.appendChild(div);
 
+                // Conta a foto carregada e decide se injeta um anúncio no scroll infinito
                 contadorFotosJS++;
-                if (isAdsenseAtivo === 1 && clientAdsenseId !== '' && contadorFotosJS % 6 === 0) {
+                if (isAdsenseAtivo === 1 && clientAdsenseId !== '' && contadorFotosJS % 12 === 0) {
                     const divAd = document.createElement('div');
                     divAd.className = 'masonry-item masonry-ad';
                     divAd.innerHTML = `
                         <span class="ad-badge">Patrocinado</span>
                         <ins class="adsbygoogle"
-                             style="display:block !important; width:100% !important; min-width:250px !important; height:250px !important; margin-top:20px;"
+                             style="display:block; width:100%; height:250px;"
                              data-ad-client="${clientAdsenseId}"
                              data-ad-format="fluid"
                              data-ad-layout="in-article"></ins>
                     `;
                     container.appendChild(divAd);
-                    
-                    if (adObserver) {
-                        adObserver.observe(divAd);
-                    } else {
-                        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
-                    }
+                    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
                 }
             });
         }
@@ -416,92 +402,14 @@ try {
             form.submit();
         }
 
-        // ==========================================
-        // SISTEMA DE AUTENTICAÇÃO (Sincronizado com index.php)
-        // ==========================================
-        let etapaLogin = 1;
-        function voltarParaEmail() {
-            etapaLogin = 1;
-            document.getElementById('div-senha').style.display = 'none';
-            document.getElementById('btn-voltar-email').style.display = 'none';
-            document.getElementById('footer-login').style.display = 'block';
-            document.getElementById('btn-submit-login').innerText = 'Continuar';
-            document.getElementById('login_senha').required = false; document.getElementById('login_senha').value = '';
-            document.getElementById('msg-login').style.display = 'none';
-            const emailInput = document.getElementById('login_email');
-            emailInput.readOnly = false; emailInput.style.backgroundColor = '#fff'; emailInput.focus();
-        }
-
-        document.getElementById('form-login').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const msg = document.getElementById('msg-login'); const btn = document.getElementById('btn-submit-login'); const emailInput = document.getElementById('login_email');
-            msg.style.display = 'none';
-
-            if (etapaLogin === 1) {
-                btn.innerText = 'Verificando...'; btn.disabled = true;
-                const formData = new FormData(); formData.append('email', emailInput.value);
-
-                try {
-                    const r = await fetch('processadores/autenticacao/verificar_email_login.php', { method: 'POST', body: formData });
-                    const res = await r.json();
-
-                    if (res.acao === 'pedir_senha' || res.acao === 'email_enviado') {
-                        etapaLogin = 2;
-                        document.getElementById('div-senha').style.display = 'block'; document.getElementById('login_senha').required = true; document.getElementById('login_senha').focus();
-                        document.getElementById('btn-voltar-email').style.display = 'block'; document.getElementById('footer-login').style.display = 'none';
-                        emailInput.readOnly = true; emailInput.style.backgroundColor = '#f1f3f4'; btn.innerText = 'Entrar';
-                        
-                        if(res.acao === 'email_enviado') {
-                            msg.className = 'alerta sucesso'; msg.innerHTML = 'Enviamos uma <b>senha temporária</b> para o seu e-mail!'; msg.style.display = 'block';
-                        }
-                    } else { msg.className = 'alerta erro'; msg.innerText = res.erro || 'E-mail não encontrado. Crie uma conta grátis abaixo.'; msg.style.display = 'block'; }
-                } catch(err) { msg.className = 'alerta erro'; msg.innerText = 'Erro ao conectar com o servidor.'; msg.style.display = 'block'; }
-                btn.disabled = false; if (etapaLogin === 1) btn.innerText = 'Continuar';
-
-            } else {
-                btn.innerText = 'Entrando...'; btn.disabled = true;
-                const formData = new FormData(); formData.append('email', emailInput.value); formData.append('senha', document.getElementById('login_senha').value);
-
-                try {
-                    const r = await fetch('processadores/autenticacao/validar_login.php', { method: 'POST', body: formData });
-                    const res = await r.json();
-                    if (res.sucesso) window.location.href = res.redirecionar || 'painel.php';
-                    else { msg.className = 'alerta erro'; msg.innerText = res.erro; msg.style.display = 'block'; btn.innerText = 'Entrar'; btn.disabled = false; }
-                } catch(err) { msg.className = 'alerta erro'; msg.innerText = 'Erro ao conectar.'; msg.style.display = 'block'; btn.innerText = 'Entrar'; btn.disabled = false; }
-            }
-        });
-
-        function abrirModalAuth() { document.getElementById('modal-auth').style.display = 'flex'; voltarParaEmail(); }
+        function abrirModalAuth() { document.getElementById('modal-auth').style.display = 'flex'; }
         function fecharModalAuth(e) { if(!e || e.target === document.getElementById('modal-auth') || e === 'forced') document.getElementById('modal-auth').style.display = 'none'; }
-        
         function alternarAbasAuth(aba) {
             document.getElementById('msg-login').style.display = 'none'; document.getElementById('msg-cadastro').style.display = 'none';
-            if (aba === 'cadastro') { document.getElementById('panel-login').style.display = 'none'; document.getElementById('panel-cadastro').style.display = 'block'; } 
+            if (aba === 'cadastro') { document.getElementById('panel-login').style.display = 'none'; document.getElementById('panel-cadastro').style.display = 'block'; }
             else { document.getElementById('panel-cadastro').style.display = 'none'; document.getElementById('panel-login').style.display = 'block'; }
         }
-
-        document.getElementById('form-cadastro').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const msg = document.getElementById('msg-cadastro'); const btn = e.target.querySelector('button');
-            msg.style.display = 'none'; btn.innerText = 'Processando...';
-
-            const formData = new FormData();
-            formData.append('nome', document.getElementById('cad_nome').value);
-            formData.append('email', document.getElementById('cad_email').value);
-            formData.append('senha', document.getElementById('cad_senha').value);
-            formData.append('confirmar_senha', document.getElementById('cad_senha').value);
-
-            try {
-                const r = await fetch('processadores/autenticacao/cadastrar_fotografo.php', { method: 'POST', body: formData });
-                const res = await r.json();
-                if (res.sucesso) { msg.className = 'alerta sucesso'; msg.innerText = 'Conta criada com sucesso!'; setTimeout(() => { window.location.href = 'painel.php'; }, 1000); } 
-                else { msg.className = 'alerta erro'; msg.innerText = res.erro || 'Erro ao cadastrar.'; btn.innerText = 'Criar Conta'; }
-            } catch(err) { msg.className = 'alerta erro'; msg.innerText = 'Erro de comunicação com o servidor.'; btn.innerText = 'Criar Conta'; }
-        });
-
-        // ==========================================
-        // CÂMERA E INTELIGÊNCIA ARTIFICIAL
-        // ==========================================
+        
         let videoStream = null;
         async function abrirModalCamera() { document.getElementById('modal-camera').style.display = 'flex'; try { videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false }); document.getElementById('video-preview').srcObject = videoStream; } catch (err) { alert("Câmera bloqueada."); } }
         function fecharModalCamera(e) { if(!e || e.target === document.getElementById('modal-camera') || e === 'forced') { document.getElementById('modal-camera').style.display = 'none'; if (videoStream) videoStream.getTracks().forEach(track => track.stop()); } }
@@ -543,38 +451,35 @@ try {
         }
         
         function limparFiltro() { location.reload(); }
+    </script>
+    
+    <div id="lgpd-cookie-banner" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 700px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); z-index: 9999; border: 1px solid #dadce0; align-items: center; justify-content: space-between; gap: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+        <div style="font-size: 13px; color: #444; line-height: 1.5; flex-grow: 1;">
+            <strong style="color: #111; font-size: 15px;">Nós usamos cookies 🍪</strong><br>
+            A Pic2Pic utiliza cookies para garantir a segurança, melhorar a sua experiência e personalizar a publicidade. Ao continuar a navegar, você concorda com a nossa política.
+        </div>
+        <button onclick="aceitarCookies()" style="background: #1a73e8; color: #fff; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap; transition: background 0.2s; height: fit-content;">
+            Entendi
+        </button>
+    </div>
 
-        // ==========================================
-        // ADSENSE OBSERVER (GALERIA) E LGPD
-        // ==========================================
+    <script>
+        // Lógica do Cookie Banner (Verifica o LocalStorage do Navegador)
         document.addEventListener("DOMContentLoaded", function() {
-            if ('IntersectionObserver' in window) {
-                adObserver = new IntersectionObserver((entries, observer) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const insElement = entry.target.querySelector('ins.adsbygoogle');
-                            if (insElement && !insElement.getAttribute('data-adsbygoogle-status')) {
-                                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { }
-                            }
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, { root: null, rootMargin: '500px', threshold: 0 });
-
-                document.querySelectorAll('.masonry-ad').forEach(card => adObserver.observe(card));
-            } else {
-                document.querySelectorAll('ins.adsbygoogle').forEach(() => {
-                    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
-                });
+            if (!localStorage.getItem('pic2pic_cookies_aceitos')) {
+                // Se não aceitou ainda, exibe o banner com Flexbox para ficar alinhado
+                document.getElementById('lgpd-cookie-banner').style.display = 'flex';
             }
-            
-            if (!localStorage.getItem('pic2pic_cookies_aceitos')) { document.getElementById('lgpd-cookie-banner').style.display = 'flex'; }
         });
 
         function aceitarCookies() {
+            // Grava o consentimento no navegador do usuário
             localStorage.setItem('pic2pic_cookies_aceitos', 'sim');
+            // Oculta o banner com uma transição rápida
             document.getElementById('lgpd-cookie-banner').style.opacity = '0';
-            setTimeout(() => { document.getElementById('lgpd-cookie-banner').style.display = 'none'; }, 300);
+            setTimeout(() => {
+                document.getElementById('lgpd-cookie-banner').style.display = 'none';
+            }, 300);
         }
     </script>
 </body>

@@ -13,7 +13,7 @@ if ($idEvento <= 0 || empty($fotoBase64)) {
 }
 
 try {
-    $hfEndpoint = "https://nyshimura-api-fotos-eventos.hf.space/extrair_base64/"; 
+    $hfEndpoint = URL_API_IA . "/extrair_base64/"; 
     
     $ch = curl_init($hfEndpoint);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 // Configurações do Banco de Dados
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'nomedabase');
-define('DB_USER', 'seuusuario');
-define('DB_PASS', 'suasenha');
+define('DB_NAME', 'pic2pic');
+define('DB_USER', 'root');
+define('DB_PASS', '');
 
 // Configuração de Ambiente (URL Base do Sistema)
 // Altere para o endereço real quando colocar no ar, com ou sem a pasta. Não inclua a barra no final (/).
@@ -13,6 +13,10 @@ define('DB_PASS', 'suasenha');
 define('APP_URL', 'https://seuendereco.com.br/fotos');
 
 define('APP_KEY', 'suachavemestradeveternominimo32caracteres'); // Chave mestra de criptografia (Mínimo 32 caracteres)
+
+// Configuração da API de Inteligência Artificial (Reconhecimento Facial)
+// Insira aqui o link raiz do seu servidor/Hugging Face Space (sem barra no final)
+define('URL_API_IA', 'https://nyshimura-api-fotos-eventos.hf.space');
 
 try {
     $options = [

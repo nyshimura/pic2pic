@@ -1,8 +1,9 @@
 <?php
 // Ficheiro: /processadores/seguranca/ping_ia.php
+require_once __DIR__ . '/../../configuracoes/conexao.php';
 
-// URL direta do seu Space no Hugging Face
-$url_ia = "https://huggingface.co/spaces/nyshimura/api-fotos-eventos"; 
+// URL direta do seu Space no Hugging Face (Carregada das configurações)
+$url_ia = URL_API_IA; 
 
 $ch = curl_init($url_ia);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -14,4 +15,4 @@ curl_exec($ch);
 curl_close($ch);
 
 // Log para que você possa verificar no servidor se o ping está a rodar
-file_put_contents('log_ping.txt', "[" . date('Y-m-d H:i:s') . "] Ping enviado para o Space nyshimura/api-fotos-eventos\n", FILE_APPEND);
+file_put_contents('log_ping.txt', "[" . date('Y-m-d H:i:s') . "] Ping enviado para a API IA\n", FILE_APPEND);
